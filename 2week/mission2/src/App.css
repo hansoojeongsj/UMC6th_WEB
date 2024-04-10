@@ -1,42 +1,58 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+body{
+  background-color: rgb(9, 9, 52);
+}
+.movie {
+  position: relative;
+  display: inline-block;
+  margin: 14.5px;
+  background-color: rgb(48, 48, 82);
+  border-radius: 3px;
+  width: 180px;
+  height: 360px;
+}
+.movie-info {
+  display: flex; /* Flexbox 사용 */
+  justify-content: space-between; /* 제목과 평균 평점을 좌우로 배치 */
+  margin: 10px;
+  
+}
+.movie-average{
+  font-weight:lighter;
+}
+.movie img {
+  width: 180px;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+.movie-info{
+  font-size: 12px;
+  color: white;
+  font-weight: bold;
+  white-space: wrap;
+}
+.movie-info .movie-title{
+  padding-right: 10px;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+
+.movie-details {
+  position: absolute;
+  font-size: 12px;
+  top: 0;
+  left: 0;
+  width: 160px;
+  height: 340px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px;
+  opacity: 0; /* 초기에는 숨김 */
+  transition: opacity 0.3s ease;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.movie:hover .movie-details {
+  opacity: 1; /* 호버 시 나타남 */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+.overview{
+  font-size: 10px;
 }

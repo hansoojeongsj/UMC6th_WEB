@@ -1,0 +1,36 @@
+
+.navbar {
+  
+  display: flex;
+  justify-content: space-between;
+}
+.navbar-right{
+  display: flex;
+  align-items: center; /* 수직 가운데 정렬 */
+  height: 10vh;
+}
+.navbar-left{
+  display: flex;
+  align-items: center; /* 수직 가운데 정렬 */
+  height: 10vh;
+}
+.navbar-title{
+  text-decoration: none;
+  color: white;
+  font-size: 30px;
+  font-weight: bold;
+  margin: 15px;
+
+}
+
+.navbar-link {
+  color:white;
+  font-size: 16px;
+  text-decoration: none;
+  margin: 15px;
+}
+.navbar-link.active ,
+.navbar-link:hover{
+  transform: scale(1.1);
+  font-weight: bold;
+}

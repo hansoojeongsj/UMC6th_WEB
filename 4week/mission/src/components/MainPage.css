@@ -1,0 +1,17 @@
+body {
+  background-color: rgb(9, 9, 52);
+}
+.main {
+  margin-left: -5px;
+  margin-right: -5px;
+  background-color: black;
+  color: white;
+  height: 40vh; 
+  display: flex;
+  justify-content: center; /* 수평 가운데 정렬 */
+  align-items: center; /* 수직 가운데 정렬 */
+}
+
+.main h1 {
+  text-align: center; /* 텍스트를 가운데 정렬 */
+}

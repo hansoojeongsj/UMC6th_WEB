@@ -125,9 +125,15 @@ function SignUpPage() {
     // 비밀번호 입력 필드 검증
     if (!formData.password.trim()) {
       newErrors.password = '비밀번호를 입력해주세요!';
+    } else if (formData.password.length < 4) {
+      newErrors.password = '비밀번호는 최소 4자리 이상이어야 합니다.';
+    } else if (formData.password.length > 12) {
+      newErrors.password = '비밀번호는 최대 12자리까지 가능합니다.';
     } else if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{4,12}$/.test(formData.password.trim())) {
-      newErrors.password = '비밀번호는 최소 4자리 이상이어야 합니다. 비밀번호는 최대 12자리까지 가능합니다. 영어, 숫자, 특수문자를 모두 조합해서 비밀번호를 작성해주세요.';
+      newErrors.password = '영어, 숫자, 특수문자를 모두 조합해서 비밀번호를 작성해주세요.';
     }
+
+
 
     // 비밀번호 확인 입력 필드 검증
     if (!formData.confirmPassword.trim()) {

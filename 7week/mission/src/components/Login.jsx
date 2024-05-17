@@ -54,7 +54,7 @@ function Login() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    id: '',
+    username: '',
     password: ''
   });
 
@@ -65,8 +65,8 @@ function Login() {
     let newErrors = { ...errors };
 
     switch (name) {
-      case 'id':
-        newErrors.id = value.trim() ? '' : '아이디를 입력해주세요!';
+      case 'username':
+        newErrors.username = value.trim() ? '' : '아이디를 입력해주세요!';
         break;
         case 'password':
           newErrors.password = value.trim() ? (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{4,12}$/.test(value.trim()) ? 
@@ -85,46 +85,69 @@ function Login() {
     setErrors(newErrors);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    let newErrors = {};
+  let newErrors = {};
 
-    if (!formData.id.trim()) {
-      newErrors.id = '아이디를 입력해주세요!';
+  if (!formData.username.trim()) {
+    newErrors.username = '아이디를 입력해주세요!';
+  }
+
+  if (!formData.password.trim()) {
+    newErrors.password = '비밀번호를 입력해주세요!';
+  } else if (formData.password.length < 4) {
+    newErrors.password = '비밀번호는 최소 4자리 이상이어야 합니다.';
+  } else if (formData.password.length > 12) {
+    newErrors.password = '비밀번호는 최대 12자리까지 가능합니다.';
+  } else if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{4,12}$/.test(formData.password.trim())) {
+    newErrors.password = '영어, 숫자, 특수문자를 모두 조합해서 비밀번호를 작성해주세요.';
+  }
+
+  setErrors(newErrors);
+
+  if (Object.keys(newErrors).length === 0) {
+    try {
+      // 서버에 로그인 데이터 전송
+      const response = await fetch('http://localhost:8080/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // 로그인 성공 시 토큰 및 아이디를 로컬스토리지에 저장
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('username', formData.username);
+        console.log('로그인 완료~!');
+        alert('로그인이 성공했습니다!');
+        navigate('/');
+      } else {
+        const errorData = await response.json();
+        console.error('로그인 실패:', errorData.message);
+        alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.');
+      }
+    } catch (error) {
+      console.error('로그인 중 오류 발생:', error);
+      alert('로그인 중 오류가 발생했습니다.');
     }
-
-    if (!formData.password.trim()) {
-      newErrors.password = '비밀번호를 입력해주세요!';
-    } else if (formData.password.length < 4) {
-      newErrors.password = '비밀번호는 최소 4자리 이상이어야 합니다.';
-    } else if (formData.password.length > 12) {
-      newErrors.password = '비밀번호는 최대 12자리까지 가능합니다.';
-    } else if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{4,12}$/.test(formData.password.trim())) {
-      newErrors.password = '영어, 숫자, 특수문자를 모두 조합해서 비밀번호를 작성해주세요.';
-    }
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      console.log(formData);
-      console.log('로그인 완료~!');
-      alert('로그인이 성공했습니다!');
-      navigate('/');
-    }
-  };
+  }
+};
 
   return (
     <SignUpForm onSubmit={handleSubmit}>
       <Title>로그인 페이지</Title>
       <InputField
         type="text"
-        name="id"
+        name="username"
         placeholder="아이디"
-        value={formData.id}
+        value={formData.username}
         onChange={handleChange}
       />
-      {errors.id && <Content><ErrorMsg>{errors.id}</ErrorMsg></Content>}
+      {errors.username && <Content><ErrorMsg>{errors.username}</ErrorMsg></Content>}
       <InputField
         type="password"
         name="password"

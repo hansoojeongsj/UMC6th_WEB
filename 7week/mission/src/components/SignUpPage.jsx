@@ -55,11 +55,11 @@ function SignUpPage() {
 
   const [formData, setFormData] = useState({
     name: '',
-    id:'',
+    username: '',
     email: '',
     age: '',
     password: '',
-    confirmPassword: ''
+    passwordCheck: ''
   });
 
   const [errors, setErrors] = useState({});
@@ -67,15 +67,15 @@ function SignUpPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    let newErrors = {...errors};
+    let newErrors = { ...errors };
     
     // 값이 변경될 때마다 검증을 실시하여 에러 메시지를 업데이트
     switch(name) {
       case 'name':
         newErrors.name = value.trim() ? '' : '이름을 입력해주세요!';
         break;
-      case 'id':
-        newErrors.id = value.trim() ? '' : '아이디를 입력해주세요!';
+      case 'username':
+        newErrors.username = value.trim() ? '' : '아이디를 입력해주세요!';
         break;
       case 'email':
         newErrors.email = value.trim() ? (/^\S+@\S+\.\S+$/.test(value.trim()) ? '' : '이메일 형식에 맞게 다시 입력해주세요!') : '이메일을 입력해주세요!';
@@ -88,8 +88,8 @@ function SignUpPage() {
         (value.trim().length < 4 ? '비밀번호는 최소 4자리 이상이어야 합니다.' : (value.trim().length > 12 ? '비밀번호는 최대 12자리까지 가능합니다.' : '비밀번호는 영어, 숫자, 특수문자를 포함해주세요.')) 
         : '') : '비밀번호를 입력해주세요!';
         break;
-      case 'confirmPassword':
-        newErrors.confirmPassword = value.trim() ? (value !== formData.password ? '비밀번호가 일치하지 않습니다.' : '') : '비밀번호를 다시 입력해주세요!';
+      case 'passwordCheck':
+        newErrors.passwordCheck = value.trim() ? (value !== formData.password ? '비밀번호가 일치하지 않습니다.' : '') : '비밀번호를 다시 입력해주세요!';
         break;
       default:
         break;
@@ -103,68 +103,44 @@ function SignUpPage() {
     setErrors(newErrors);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let newErrors = {};
+    // 회원가입 데이터 객체 생성
+    const signUpData = {
+      name: formData.name,
+      username: formData.username,
+      email: formData.email,
+      age: formData.age,
+      password: formData.password,
+      passwordCheck: formData.passwordCheck
+    };
 
-    // 이름 입력 필드 검증
-    if (!formData.name.trim()) {
-      newErrors.name = '이름을 입력해주세요!';
-    }
-    // 아이디 입력 필드 검증
-    if (!formData.id.trim()) {
-      newErrors.id = '아이디를 입력해주세요!';
-    }
-    // 이메일 입력 필드 검증
-    if (!formData.email.trim()) {
-      newErrors.email = '이메일을 입력해주세요!';
-    } else if (!/^\S+@\S+\.\S+$/.test(formData.email.trim())) {
-      newErrors.email = '이메일 형식에 맞게 다시 입력해주세요!';
-    }
-    // 나이 입력 필드 검증
-    if (!formData.age.trim()) {
-      newErrors.age = '나이를 입력해주세요!';
-    } else if (isNaN(formData.age)) {
-      newErrors.age = '나이는 숫자로 입력해주세요!';
-    } else if (parseFloat(formData.age) !== parseInt(formData.age)) {
-      newErrors.age = '나이는 실수를 입력할 수 없습니다.';
-    } else if (parseInt(formData.age) < 0) {
-      newErrors.age = '나이는 음수가 될 수 없습니다.';
-    } else if (parseInt(formData.age) < 19) {
-      newErrors.age = '19세 이상만 사용 가능 합니다!';
-    }
+    try {
+      // 서버에 회원가입 데이터 전송
+      const response = await fetch('http://localhost:8080/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(signUpData)
+      });
 
-    // 비밀번호 입력 필드 검증
-    if (!formData.password.trim()) {
-      newErrors.password = '비밀번호를 입력해주세요!';
-    } else if (formData.password.length < 4) {
-      newErrors.password = '비밀번호는 최소 4자리 이상이어야 합니다.';
-    } else if (formData.password.length > 12) {
-      newErrors.password = '비밀번호는 최대 12자리까지 가능합니다.';
-    } else if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{4,12}$/.test(formData.password.trim())) {
-      newErrors.password = '영어, 숫자, 특수문자를 모두 조합해서 비밀번호를 작성해주세요.';
-    }
-
-
-
-    // 비밀번호 확인 입력 필드 검증
-    if (!formData.confirmPassword.trim()) {
-      newErrors.confirmPassword = '비밀번호를 다시 입력해주세요!';
-    } else if (formData.password.trim() !== formData.confirmPassword.trim()) {
-      newErrors.confirmPassword = '비밀번호가 일치하지 않습니다.';
-    }
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      // 여기에 회원가입 처리 로직 작성
-      console.log(formData);
-      console.log('제출 완료~!');
-      // 회원가입이 성공했을 때 알림 띄우기
-      alert('회원가입이 성공했습니다!');
-      // 홈페이지로 이동
-      navigate('/'); // 홈페이지 경로로 변경
+      // 응답 확인
+      if (response.ok) {
+        // 회원가입 성공 메시지 출력
+        alert('회원가입이 성공했습니다!');
+        // 홈페이지로 이동
+        navigate('/login');
+      } else {
+        const errorData = await response.json();
+        // 서버로부터 받은 에러 메시지 출력
+        alert(errorData.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      // 에러 발생 시 알림
+      alert('회원가입 중 오류가 발생했습니다.');
     }
   };
 
@@ -181,12 +157,12 @@ function SignUpPage() {
       {errors.name && <Content><ErrorMsg>{errors.name}</ErrorMsg></Content>}
       <InputField
         type="text"
-        name="id"
+        name="username"
         placeholder="아이디를 입력해주세요"
-        value={formData.id}
+        value={formData.username}
         onChange={handleChange}
       />
-      {errors.id && <Content><ErrorMsg>{errors.id}</ErrorMsg></Content>}
+      {errors.username && <Content><ErrorMsg>{errors.username}</ErrorMsg></Content>}
       <InputField
         type="text"
         name="email"
@@ -213,12 +189,12 @@ function SignUpPage() {
       {errors.password && <Content><ErrorMsg>{errors.password}</ErrorMsg></Content>}
       <InputField
         type="password"
-        name="confirmPassword"
+        name="passwordCheck"
         placeholder="비밀번호 확인"
-        value={formData.confirmPassword}
+        value={formData.passwordCheck}
         onChange={handleChange}
       />
-      {errors.confirmPassword && <Content><ErrorMsg>{errors.confirmPassword}</ErrorMsg></Content>}
+      {errors.passwordCheck && <Content><ErrorMsg>{errors.passwordCheck}</ErrorMsg></Content>}
       <Button type="submit">제출하기</Button>
       <BottomContent>
         이미 아이디가 있으신가요?{' '}

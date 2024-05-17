@@ -1,4 +1,4 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './PopularPage.css';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
@@ -89,10 +89,12 @@ const MovieDetails = styled.div`
 const Overview = styled.div`
   font-size: 10px;
 `;
+
 const MovieVote = styled.div`
   font-size: 12px;
   color: white;
-  font-weight: bold;`;
+  font-weight: bold;
+`;
 
 function NowPlayingPage() {
   const [movies, setMovies] = useState([]);
@@ -134,8 +136,8 @@ function NowPlayingPage() {
   return (
     <AppContainer>
       <MovieList>
-        {movies.map(movie => (
-          <MovieContainer key={movie.id}>
+        {movies.map((movie, index) => (
+          <MovieContainer key={`${movie.id}-${index}`}>
             <MovieLink to={`/movie/${encodeURIComponent(movie.id)}`}>
               <MovieImage src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.id} />
               <MovieInfo>

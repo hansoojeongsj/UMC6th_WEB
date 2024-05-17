@@ -45,6 +45,8 @@ function Navbar() {
         <NavbarTitle to="/">UMC Movie</NavbarTitle>
       </NavbarLeft>
       <NavbarRight>
+      <StyledNavLink to="/login">로그인</StyledNavLink>
+
         <StyledNavLink to="/signup">회원가입</StyledNavLink>
         <StyledNavLink to="/popular">Popular</StyledNavLink>
         <StyledNavLink to="/now-playing">Now Playing</StyledNavLink>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
@@ -50,24 +50,23 @@ const ListContainer = styled.div`
   background-color: #1c1c40;
   padding: 10px;
   margin: 40px 240px;
-  display: ${({ show }) => (show ? 'flex' : 'none')};
+  display: ${({ $show }) => ($show ? 'flex' : 'none')};
   flex-wrap: wrap;
   justify-content: center;
   gap: 20px;
   height: 800px;
   overflow-y: auto;
-  
-  /* 스크롤바 스타일링 */
+
   &::-webkit-scrollbar {
     width: 8px;
   }
 
   &::-webkit-scrollbar-track {
-    background:#1c1c40;
+    background: #1c1c40;
   }
 
   &::-webkit-scrollbar-thumb {
-    background:  #f1f1f1;
+    background: #f1f1f1;
     border-radius: 4px;
   }
 
@@ -87,7 +86,6 @@ const MovieItem = styled.div`
   position: relative;
   cursor: pointer;
   height: 420px;
-  
 `;
 
 const MovieImage = styled.img`
@@ -155,6 +153,14 @@ function MainPage() {
   const [showResults, setShowResults] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [debounceTimer, setDebounceTimer] = useState(null);
+  const [userId, setUserId] = useState('');
+
+  useEffect(() => {
+    const storedUserId = localStorage.getItem('username');
+    if (storedUserId) {
+      setUserId(storedUserId);
+    }
+  }, []);
 
   const debounce = (func, delay) => {
     clearTimeout(debounceTimer);
@@ -165,62 +171,63 @@ function MainPage() {
     setDebounceTimer(timer);
   };
 
-const handleSearch = () => {
-  setSearchResults([]);
-  setIsLoading(true);
-  setError(null);
+  const handleSearch = () => {
+    setSearchResults([]);
+    setIsLoading(true);
+    setError(null);
 
-  if (searchTerm.trim() !== '') {
-    const apiKey = '6c60e7f9faa167c5a152da49115e39ee';
-    const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${searchTerm}&include_adult=false&language=ko-KR&page=1`;
+    if (searchTerm.trim() !== '') {
+      const apiKey = '6c60e7f9faa167c5a152da49115e39ee';
+      const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${searchTerm}&include_adult=false&language=ko-KR&page=1`;
 
-    fetch(url)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        setSearchResults(data.results);
-        setShowResults(true);
-      })
-      .catch(error => {
-        setError(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  } else {
-    // 검색어가 비어있을 때만 알림을 표시합니다.
-    if (showResults) {
-      alert('검색어를 입력해주세요!');
+      fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          setSearchResults(data.results);
+          setShowResults(true);
+        })
+        .catch(error => {
+          setError(error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    } else {
+      if (showResults) {
+        alert('검색어를 입력해주세요!');
+      }
     }
-  }
-};
+  };
 
   const handleChange = event => {
     const value = event.target.value;
     setSearchTerm(value);
-    debounce(handleSearch, 300); 
+    debounce(handleSearch, 300);
   };
 
   return (
     <>
       <StyledMain>
-        <h1>🎬환영합니다🎬</h1>
+        <h1>🎬 {userId ? `${userId}님, 환영합니다!` : '환영합니다'} 🎬</h1>
       </StyledMain>
       <SearchContainer>
         <SearchTitle>📽️ Find your movies!</SearchTitle>
         <div>
-        <SearchInput overflow={showResults ? 'true' : 'false'} 
-        id="searchInput" 
-        type="text"
-        onChange={handleChange} />
+          <SearchInput
+            overflow={showResults ? 'true' : 'false'}
+            id="searchInput"
+            type="text"
+            onChange={handleChange}
+          />
           <SearchButton onClick={handleSearch}>🔍</SearchButton>
         </div>
       </SearchContainer>
-      <ListContainer show={showResults ? 1 : 0}>
+      <ListContainer $show={showResults ? 1 : 0}>
         {isLoading ? (
           <LoadingMessage>데이터를 받아오는 중 입니다</LoadingMessage>
         ) : error ? (
@@ -230,14 +237,19 @@ const handleSearch = () => {
             <MovieItem key={movie.id}>
               <MovieLink to={`/movie/${movie.id}`}>
                 {movie.poster_path && (
-                  <MovieImage src={`https://image.tmdb.org/t/p/w200/${movie.poster_path}`} alt={movie.title} />
+                  <MovieImage
+                    src={`https://image.tmdb.org/t/p/w200/${movie.poster_path}`}
+                    alt={movie.title}
+                  />
                 )}
                 <MovieSmall>
-                  <MovieTitle overflow={movie.title.length > 30}>{movie.title}</MovieTitle>
+                  <MovieTitle overflow={movie.title.length > 30}>
+                    {movie.title}
+                  </MovieTitle>
                   <VoteAverage>⭐{movie.vote_average}</VoteAverage>
                 </MovieSmall>
                 <MovieDetails>
-                  <MovieTitle >{movie.title}</MovieTitle>
+                  <MovieTitle>{movie.title}</MovieTitle>
                   <Overview>{movie.overview}</Overview>
                 </MovieDetails>
               </MovieLink>

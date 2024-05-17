@@ -64,7 +64,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             </>
           }
         />
-        <Route path="/movie/:movieTitle" element={
+        <Route path="/movie/:movieId" element={
             <>
               <Navbar />
               <MovieDetailPage />

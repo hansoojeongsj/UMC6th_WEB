@@ -1,6 +1,6 @@
-import styled from 'styled-components';
 import { useState } from 'react';
-
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const StyledMain = styled.div`
   margin: 0;
@@ -9,12 +9,8 @@ const StyledMain = styled.div`
   min-height: 40vh;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* 수평 가운데 정렬 */
-  align-items: center; /* 수직 가운데 정렬 */
-
-  h1 {
-    text-align: center; /* 텍스트를 가운데 정렬 */
-  }
+  justify-content: center;
+  align-items: center;
 `;
 
 const SearchContainer = styled.div`
@@ -53,25 +49,44 @@ const SearchButton = styled.button`
 const ListContainer = styled.div`
   background-color: #1c1c40;
   padding: 10px;
-  margin-top: 40px;
-  margin-left: 240px;
-  margin-right: 240px;
-  display: ${({ show }) => (show ? 'flex' : 'none')}; /* 검색 결과가 있을 때만 표시 */
-  overflow-x: auto;
-  height: 700px;
-  /* 스크롤바 스타일 */
-  scrollbar-width: thin;
-  scrollbar-color: #bdbde9 #1c1c40; /* thumb color track color */
+  margin: 40px 240px;
+  display: ${({ show }) => (show ? 'flex' : 'none')};
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  height: 800px;
+  overflow-y: auto;
+  
+  /* 스크롤바 스타일링 */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background:#1c1c40;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background:  #f1f1f1;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 `;
 
-const MovieItem = styled.li`
-  display: inline-block;
-  margin-right: 20px;
-  margin-bottom: 20px;
+const LoadingMessage = styled.p`
+  color: white;
+  font-weight: bold;
+`;
+
+const MovieItem = styled.div`
   width: 200px;
   background-color: #2d2d54;
-  position: relative; /* 마우스 호버 시 내용을 표시하기 위해 상대 위치 지정 */
+  position: relative;
   cursor: pointer;
+  height: 420px;
   
 `;
 
@@ -84,53 +99,74 @@ const MovieDetails = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  width: 200px;
+  width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.7);
   color: white;
   opacity: 0;
   transition: opacity 0.3s ease;
-  
+
   ${MovieItem}:hover & {
     opacity: 1;
   }
 `;
 
 const MovieSmall = styled.span`
-  width: 200px;
+  width: 100%;
   height: 80px;
-  margin-bottom: 20px;
-  background-color: rgb(48, 48, 82);
   display: flex;
   justify-content: space-between;
 `;
 
 const MovieTitle = styled.div`
   color: white;
-  margin: 6px;
-  height: 85px; 
-  font-size: 15px ;
+  margin: 5px;
+  height: 85px;
+  font-size: 15px;
+  overflow: ${({ overflow }) => (overflow ? 'auto' : 'inherit')};
 `;
 
 const VoteAverage = styled.div`
   color: white;
   margin: 6px;
-  font-size: 15px ;
-
+  font-size: 15px;
 `;
-const Overview = styled.p`
+
+const Overview = styled.div`
   font-size: 10px;
   color: white;
-  margin: 10px;
+  margin-left: 8px;
+  margin-right: 8px;
+  height: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: -20px;
+`;
+
+const MovieLink = styled(Link)`
+  text-decoration: none;
+  color: inherit;
 `;
 
 function MainPage() {
   const [searchResults, setSearchResults] = useState([]);
-  const [showResults, setShowResults] = useState(false); // 검색 결과 표시 여부 상태 추가
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [showResults, setShowResults] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [debounceTimer, setDebounceTimer] = useState(null);
+
+  const debounce = (func, delay) => {
+    clearTimeout(debounceTimer);
+    const timer = setTimeout(func, delay);
+    setDebounceTimer(timer);
+  };
 
   const handleSearch = () => {
     setSearchResults([]);
-    const searchTerm = document.getElementById('searchInput').value;
+    setIsLoading(true);
+    setError(null);
+
     if (searchTerm.trim() !== '') {
       const apiKey = '6c60e7f9faa167c5a152da49115e39ee';
       const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${searchTerm}&include_adult=false&language=ko-KR&page=1`;
@@ -144,14 +180,23 @@ function MainPage() {
         })
         .then(data => {
           setSearchResults(data.results);
-          setShowResults(true); // 검색 결과가 있을 때만 표시
+          setShowResults(true);
         })
         .catch(error => {
-          console.error('There was a problem with your fetch operation:', error);
+          setError(error);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     } else {
       alert('검색어를 입력해주세요!');
     }
+  };
+
+  const handleChange = event => {
+    const value = event.target.value;
+    setSearchTerm(value);
+    debounce(handleSearch, 300); 
   };
 
   return (
@@ -162,27 +207,37 @@ function MainPage() {
       <SearchContainer>
         <SearchTitle>📽️ Find your movies!</SearchTitle>
         <div>
-          <SearchInput id="searchInput" type="text" />
+        <SearchInput overflow={showResults ? 'true' : 'false'} 
+        id="searchInput" 
+        type="text"
+        onChange={handleChange} />
           <SearchButton onClick={handleSearch}>🔍</SearchButton>
         </div>
       </SearchContainer>
-      <ListContainer show={showResults}>
-        <ul>
-          {searchResults.map(movie => (
+      <ListContainer show={showResults ? 1 : 0}>
+        {isLoading ? (
+          <LoadingMessage>데이터를 받아오는 중 입니다</LoadingMessage>
+        ) : error ? (
+          <p>오류가 발생했습니다: {error.message}</p>
+        ) : (
+          searchResults.map(movie => (
             <MovieItem key={movie.id}>
-              <MovieImage src={`https://image.tmdb.org/t/p/w200/${movie.poster_path}`} alt={movie.title} />
-
-              <MovieSmall>
-              <MovieTitle overflow={movie.title.length > 30}>{movie.title}</MovieTitle>
-              <VoteAverage>⭐{movie.vote_average}</VoteAverage>
-              </MovieSmall>
-              <MovieDetails>
-                <MovieTitle>{movie.title}</MovieTitle>
-                <Overview>{movie.overview}</Overview>
-              </MovieDetails>
+              <MovieLink to={`/movie/${movie.id}`}>
+                {movie.poster_path && (
+                  <MovieImage src={`https://image.tmdb.org/t/p/w200/${movie.poster_path}`} alt={movie.title} />
+                )}
+                <MovieSmall>
+                  <MovieTitle overflow={movie.title.length > 30}>{movie.title}</MovieTitle>
+                  <VoteAverage>⭐{movie.vote_average}</VoteAverage>
+                </MovieSmall>
+                <MovieDetails>
+                  <MovieTitle >{movie.title}</MovieTitle>
+                  <Overview>{movie.overview}</Overview>
+                </MovieDetails>
+              </MovieLink>
             </MovieItem>
-          ))}
-        </ul>
+          ))
+        )}
       </ListContainer>
     </>
   );

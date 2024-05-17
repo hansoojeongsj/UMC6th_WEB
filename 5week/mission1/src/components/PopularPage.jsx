@@ -85,7 +85,7 @@ const MovieDetails = styled.div`
   }
 `;
 
-const Overview = styled.p`
+const Overview = styled.div`
   font-size: 10px;
 `;
 const MovieVote = styled.div`
@@ -98,7 +98,7 @@ function PopularPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('https://api.themoviedb.org/3/movie/popular?api_key=6c60e7f9faa167c5a152da49115e39ee')
+    fetch('https://api.themoviedb.org/3/movie/popular?api_key=6c60e7f9faa167c5a152da49115e39ee&language=ko-KR')
       .then(response => response.json())
       .then(data => {
         setMovies(data.results);
@@ -118,8 +118,8 @@ function PopularPage() {
         <MovieList>
           {movies.map(movie => (
             <MovieContainer key={movie.id}>
-              <MovieLink to={`/movie/${encodeURIComponent(movie.title)}`}>
-                <MovieImage src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} />
+              <MovieLink to={`/movie/${encodeURIComponent(movie.id)}`}>
+                <MovieImage src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.id} />
                 <MovieInfo>
                   <MovieTitle>{movie.title}</MovieTitle>
                   <MovieVote>⭐{movie.vote_average}</MovieVote>

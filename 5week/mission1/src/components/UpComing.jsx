@@ -8,7 +8,7 @@ function UpComing() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('https://api.themoviedb.org/3/movie/upcoming?api_key=6c60e7f9faa167c5a152da49115e39ee')
+    fetch('https://api.themoviedb.org/3/movie/upcoming?api_key=6c60e7f9faa167c5a152da49115e39ee&language=ko-KR')
       .then(response => response.json())
       .then(data => {
         setMovies(data.results);
@@ -28,9 +28,9 @@ function UpComing() {
         <div className="movie-list">
           {movies.map(movie => (
             <div key={movie.id} className="movie">
-            <Link to={`/movie/${encodeURIComponent(movie.title)}`} className="movie-link">
+            <Link to={`/movie/${encodeURIComponent(movie.id)}`} className="movie-link">
 
-              <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} />
+              <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.id} />
               <div className="movie-info">
                 <div className="movie-title">{movie.title}</div>
                 <div className="movie-average">⭐{movie.vote_average}</div>

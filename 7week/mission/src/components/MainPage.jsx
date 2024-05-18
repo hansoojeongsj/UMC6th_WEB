@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect,useContext } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';
 
 const StyledMain = styled.div`
   margin: 0;
@@ -121,7 +122,7 @@ const MovieTitle = styled.div`
   margin: 5px;
   height: 85px;
   font-size: 15px;
-  overflow: ${({ overflow }) => (overflow ? 'auto' : 'inherit')};
+  overflow: ${props => (props.overflow === 'true' ? 'auto' : 'inherit')};
 `;
 
 const VoteAverage = styled.div`
@@ -152,26 +153,30 @@ function MainPage() {
   const [error, setError] = useState(null);
   const [showResults, setShowResults] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [debounceTimer, setDebounceTimer] = useState(null);
-  const [userId, setUserId] = useState('');
+  const [isUserLoading, setIsUserLoading] = useState(true);
+
+  // AuthContext에서 username 가져오기
+  const { username } = useContext(AuthContext);
 
   useEffect(() => {
     const storedUserId = localStorage.getItem('username');
     if (storedUserId) {
-      setUserId(storedUserId);
+      // setUserId(storedUserId); // 이 줄은 더 이상 필요하지 않으므로 주석 처리
     }
+    setIsUserLoading(false);
   }, []);
 
+  // 나머지 코드는 동일함
+
   const debounce = (func, delay) => {
-    clearTimeout(debounceTimer);
-    const timer = setTimeout(() => {
-      func();
-      setDebounceTimer(null);
-    }, delay);
-    setDebounceTimer(timer);
+    let debounceTimer;
+    return (...args) => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => func(...args), delay);
+    };
   };
 
-  const handleSearch = () => {
+  const handleSearch = debounce(() => {
     setSearchResults([]);
     setIsLoading(true);
     setError(null);
@@ -202,18 +207,22 @@ function MainPage() {
         alert('검색어를 입력해주세요!');
       }
     }
-  };
+  }, 300);
 
   const handleChange = event => {
     const value = event.target.value;
     setSearchTerm(value);
-    debounce(handleSearch, 300);
+    handleSearch();
   };
 
   return (
     <>
       <StyledMain>
-        <h1>🎬 {userId ? `${userId}님, 환영합니다!` : '환영합니다'} 🎬</h1>
+        {isUserLoading ? (
+          <LoadingMessage>로딩 중...</LoadingMessage>
+        ) : (
+          <h1>🎬 {username ? `${username}님, 환영합니다!` : '환영합니다'} 🎬</h1>
+        )}
       </StyledMain>
       <SearchContainer>
         <SearchTitle>📽️ Find your movies!</SearchTitle>
@@ -243,7 +252,7 @@ function MainPage() {
                   />
                 )}
                 <MovieSmall>
-                  <MovieTitle overflow={movie.title.length > 30}>
+                  <MovieTitle overflow={(movie.title.length > 30).toString()}>
                     {movie.title}
                   </MovieTitle>
                   <VoteAverage>⭐{movie.vote_average}</VoteAverage>

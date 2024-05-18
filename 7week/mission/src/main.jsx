@@ -1,4 +1,6 @@
 import React from 'react';
+import { AuthProvider } from './contexts/AuthContext';
+
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './Navbar.jsx';
@@ -15,7 +17,10 @@ import Login from './components/Login.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+    <AuthProvider>
+
     <Router>
+
       <Routes>
         <Route path="/" element={
             <>
@@ -88,5 +93,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         />
       </Routes>
     </Router>
+    </AuthProvider>
+
   </React.StrictMode>
 );

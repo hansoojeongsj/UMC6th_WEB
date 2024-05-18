@@ -56,6 +56,7 @@ function SignUpPage() {
   const [formData, setFormData] = useState({
     name: '',
     username: '',
+
     email: '',
     age: '',
     password: '',
@@ -130,16 +131,13 @@ function SignUpPage() {
       if (response.ok) {
         // 회원가입 성공 메시지 출력
         alert('회원가입이 성공했습니다!');
-        // 홈페이지로 이동
         navigate('/login');
       } else {
         const errorData = await response.json();
-        // 서버로부터 받은 에러 메시지 출력
         alert(errorData.message);
       }
     } catch (error) {
       console.error('Error:', error);
-      // 에러 발생 시 알림
       alert('회원가입 중 오류가 발생했습니다.');
     }
   };

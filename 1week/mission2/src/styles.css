@@ -1,0 +1,85 @@
+body {
+  background-color: rgb(234, 239, 247);
+}
+
+h1 {
+  text-align: center;
+  margin: 70px;
+}
+
+hr {
+  width: 90%;
+  border: 1px solid rgb(166, 182, 203);
+}
+
+input {
+  width: 60%;
+  height: 40px;
+  margin-left: 20%;
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  flex-direction: column;
+}
+
+::placeholder {
+  font-style: italic;
+  color: rgb(166, 182, 203); 
+}
+
+.container {
+  display: flex;
+  justify-content: center; 
+}
+
+.content-container {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;  
+}
+
+.contentTitle {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-inline: 40%;
+  border-bottom: 2px solid rgb(166, 182, 203);
+}
+
+
+.study-plan {
+  display: flex;
+  flex-direction: column;
+  width: 350px;
+  text-align: left;
+  font-weight: bold;
+  margin-left: 50px;
+}
+
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 2px solid rgb(166, 182, 203);
+}
+
+.todo-item p {
+  margin: 0;
+}
+
+.todo-item div {
+  display: flex;
+  flex-direction: column; 
+}
+
+.todo-item button {
+  background-color: rgb(166, 182, 203);
+  color: black;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}

@@ -23,6 +23,9 @@ const InputField = styled.input`
   width: 350px;
   height: 25px;
   font-weight: bold;
+  @media (max-width: 410px) {
+    width: 80%;
+  }
 `;
 
 const Button = styled.button`
@@ -33,8 +36,10 @@ const Button = styled.button`
   border: none;
   border-radius: 15px;
   cursor: pointer;
-  width: 356px;
-`;
+  width: 360px;
+  @media (max-width: 410px) {
+    width: 85%;
+  }`;
 
 const Content = styled.p`
   color: white;
@@ -48,6 +53,13 @@ const ErrorMsg = styled.span`
 const BottomContent = styled.span`
   margin: 20px;
   color: white;
+  @media (max-width: 450px) {
+    font-size: 13px;
+  }
+  @media (max-width: 370px) {
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 const LoginLink = styled(Link)`

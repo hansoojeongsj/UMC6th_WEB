@@ -1,4 +1,4 @@
-import { useState, useEffect,useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
@@ -12,18 +12,39 @@ const StyledMain = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  @media (min-width: 430px) and (max-width: 550px) {
+    font-size: 13px;
+  }
+  @media (min-width: 330px) and (max-width: 430px) {
+    font-size: 10px;
+  }
+  @media (max-width: 330px) {
+    font-size: 8px;
+  }
 `;
 
 const SearchContainer = styled.div`
   margin-top: 20px;
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-direction: column;
 `;
 
 const SearchTitle = styled.h2`
   color: white;
   margin-bottom: 10px;
+  @media (max-width: 430px) {
+    font-size: 20px;
+  }
+`;
+
+const SearchForm = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
 `;
 
 const SearchInput = styled.input`
@@ -31,20 +52,26 @@ const SearchInput = styled.input`
   border: 1px solid #ccc;
   border-radius: 10px;
   font-size: 16px;
-  width: 300px;
-  max-width: 80%;
+  width: 70%;
+  max-width: 300px;
+  @media (max-width: 430px) {
+    font-size: 20px;
+    max-width: 60%;
+  }
 `;
 
 const SearchButton = styled.button`
-  margin-top: 10px;
   padding: 8px 8px;
   background-color: #ffffff;
   color: #000000;
   border: 1px solid #ccc;
-  border-radius: 90px;
+  border-radius: 15px;
   cursor: pointer;
   font-size: 16px;
-  margin-left: 25px;
+  margin-left: 10px;
+  @media (max-width: 430px) {
+    font-size: 13px;
+  }
 `;
 
 const ListContainer = styled.div`
@@ -155,18 +182,15 @@ function MainPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isUserLoading, setIsUserLoading] = useState(true);
 
-  // AuthContext에서 username 가져오기
   const { username } = useContext(AuthContext);
 
   useEffect(() => {
     const storedUserId = localStorage.getItem('username');
     if (storedUserId) {
-      // setUserId(storedUserId); // 이 줄은 더 이상 필요하지 않으므로 주석 처리
+      // setUserId(storedUserId);
     }
     setIsUserLoading(false);
   }, []);
-
-  // 나머지 코드는 동일함
 
   const debounce = (func, delay) => {
     let debounceTimer;
@@ -226,7 +250,7 @@ function MainPage() {
       </StyledMain>
       <SearchContainer>
         <SearchTitle>📽️ Find your movies!</SearchTitle>
-        <div>
+        <SearchForm>
           <SearchInput
             overflow={showResults ? 'true' : 'false'}
             id="searchInput"
@@ -234,7 +258,7 @@ function MainPage() {
             onChange={handleChange}
           />
           <SearchButton onClick={handleSearch}>🔍</SearchButton>
-        </div>
+        </SearchForm>
       </SearchContainer>
       <ListContainer $show={showResults ? 1 : 0}>
         {isLoading ? (

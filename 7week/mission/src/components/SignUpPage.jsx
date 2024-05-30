@@ -7,11 +7,13 @@ const SignUpForm = styled.form`
   flex-direction: column;
   align-items: center;
 `;
+
 const Title = styled.h3`
   font-weight: bold;
   color: white;
   margin-bottom: 15px;
 `;
+
 const InputField = styled.input`
   margin: 10px;
   padding: 8px;
@@ -20,6 +22,9 @@ const InputField = styled.input`
   width: 350px;
   height: 25px;
   font-weight: bold;
+  @media (max-width: 410px) {
+    width: 80%;
+  }
 `;
 
 const Button = styled.button`
@@ -30,8 +35,12 @@ const Button = styled.button`
   border: none;
   border-radius: 15px;
   cursor: pointer;
-  width: 356px;
+  width: 360px;
+  @media (max-width: 410px) {
+    width: 85%;
+  }
 `;
+
 const Content = styled.p`
   color: white;
   margin: 3px;
@@ -40,10 +49,20 @@ const Content = styled.p`
 const ErrorMsg = styled.span`
   color: red;
 `;
-const BottomContent = styled.span`
+
+const BottomContent = styled.div`
   margin: 20px;
   color: white;
+  text-align: center;
+  @media (max-width: 450px) {
+    font-size: 13px;
+  }
+  @media (max-width: 370px) {
+    display: flex;
+    flex-direction: column;
+  }
 `;
+
 const LoginLink = styled(Link)`
   text-decoration: none;
   color: white;
@@ -56,7 +75,6 @@ function SignUpPage() {
   const [formData, setFormData] = useState({
     name: '',
     username: '',
-
     email: '',
     age: '',
     password: '',
@@ -65,12 +83,10 @@ function SignUpPage() {
 
   const [errors, setErrors] = useState({});
 
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     let newErrors = { ...errors };
     
-    // 값이 변경될 때마다 검증을 실시하여 에러 메시지를 업데이트
     switch(name) {
       case 'name':
         newErrors.name = value.trim() ? '' : '이름을 입력해주세요!';
@@ -107,7 +123,6 @@ function SignUpPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 회원가입 데이터 객체 생성
     const signUpData = {
       name: formData.name,
       username: formData.username,
@@ -118,7 +133,6 @@ function SignUpPage() {
     };
 
     try {
-      // 서버에 회원가입 데이터 전송
       const response = await fetch('http://localhost:8080/auth/signup', {
         method: 'POST',
         headers: {
@@ -127,9 +141,7 @@ function SignUpPage() {
         body: JSON.stringify(signUpData)
       });
 
-      // 응답 확인
       if (response.ok) {
-        // 회원가입 성공 메시지 출력
         alert('회원가입이 성공했습니다!');
         navigate('/login');
       } else {
@@ -198,7 +210,7 @@ function SignUpPage() {
         이미 아이디가 있으신가요?{' '}
         <LoginLink to="/login">로그인 페이지로 이동하기</LoginLink>
       </BottomContent>    
-      </SignUpForm>
+    </SignUpForm>
   );
 }
 

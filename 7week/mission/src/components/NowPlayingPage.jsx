@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 const AppContainer = styled.div`
   background-color: rgb(9, 9, 52);
+  
 `;
 
 const LoadingContainer = styled.div`
@@ -38,6 +39,7 @@ const MovieContainer = styled.div`
   border-radius: 3px;
   width: 180px;
   height: 360px;
+  justify-content: left;
 `;
 
 const MovieLink = styled(Link)`
@@ -89,13 +91,15 @@ const MovieDetails = styled.div`
 const Overview = styled.div`
   font-size: 10px;
 `;
-
 const MovieVote = styled.div`
   font-size: 12px;
   color: white;
-  font-weight: bold;
-`;
-
+  font-weight: bold;`;
+const SmallList= styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+`
 function NowPlayingPage() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -136,6 +140,7 @@ function NowPlayingPage() {
   return (
     <AppContainer>
       <MovieList>
+        <SmallList>
         {movies.map((movie, index) => (
           <MovieContainer key={`${movie.id}-${index}`}>
             <MovieLink to={`/movie/${encodeURIComponent(movie.id)}`}>
@@ -151,6 +156,7 @@ function NowPlayingPage() {
             </MovieLink>
           </MovieContainer>
         ))}
+        </SmallList>
       </MovieList>
       {loading && (
         <LoadingContainer>

@@ -3,22 +3,44 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 const MovieDetailContainer = styled.div`
-  margin: 3% 15% 5% 20%;
+  margin: 0% 13% 5% 15%;
   color: white;
   display: flex;
   background-position: center;
   padding: 20px;
 
+  @media (max-width: 800px) {
+    flex-direction: column;
+    align-items: center;
+  }
+  @media (max-width: 500px) {
+    margin: 3% 10% 5% 10%;
+
+  }
 `;
 
 const MovieImage = styled.img`
   width: 300px;
   height: auto;
+
+  @media (max-width: 500px) {
+    flex-direction: column;
+    align-items: center;
+    width: 250px;
+  }
 `;
 
 const MovieText = styled.div`
   height: auto;
   margin-left: 25px;
+
+  @media (max-width: 800px) {
+    margin-left: 0;
+    margin-top: 20px;
+  }
+  @media (max-width: 500px) {
+    font-size: 14px;
+  }
 `;
 
 const Loading = styled.div`
@@ -65,8 +87,18 @@ const CastTitle = styled.p`
   margin-bottom: 30px;
   display: flex;
   flex-direction: column;
-
   align-items: center;
+  @media (max-width: 650px) {
+    font-size: 25px;
+  }
+  @media (max-width: 450px) {
+    font-size: 20px;
+  }
+`;
+const SmallCast = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 `;
 
 const calculateStars = (rating) => {
@@ -140,6 +172,7 @@ function MovieDetailPage() {
       </MovieDetailContainer>
       <CastTitle>출연진 및 제작진</CastTitle>
       <Cast>
+        <SmallCast>
         {crew.filter(member => member.job === 'Director' || member.job === 'Writer').map(member => (
           <CastMember key={member.id}>
             <CastImage src={member.profile_path ? `https://image.tmdb.org/t/p/w500${member.profile_path}` : NoImageSrc} alt={`${member.name}의 프로필 사진`} />
@@ -152,9 +185,9 @@ function MovieDetailPage() {
             <CastImage src={actor.profile_path ? `https://image.tmdb.org/t/p/w500${actor.profile_path}` : NoImageSrc} alt={`${actor.name}의 프로필 사진`} />
             <CastName>{actor.name}</CastName>
             <CastName>Acting</CastName>
-
           </CastMember>
         ))}
+        </SmallCast>
       </Cast>
     </>
   );

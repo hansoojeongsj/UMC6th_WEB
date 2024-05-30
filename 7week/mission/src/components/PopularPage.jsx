@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 const AppContainer = styled.div`
   background-color: rgb(9, 9, 52);
+  
 `;
 
 const LoadingContainer = styled.div`
@@ -38,6 +39,7 @@ const MovieContainer = styled.div`
   border-radius: 3px;
   width: 180px;
   height: 360px;
+  justify-content: left;
 `;
 
 const MovieLink = styled(Link)`
@@ -93,7 +95,11 @@ const MovieVote = styled.div`
   font-size: 12px;
   color: white;
   font-weight: bold;`;
-
+const SmallList= styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+`
 function PopularPage() {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -138,6 +144,7 @@ function PopularPage() {
       ) : (
         <>
           <MovieList>
+            <SmallList>
             {movies.map(movie => (
               <MovieContainer key={movie.id}>
                 <MovieLink to={`/movie/${encodeURIComponent(movie.id)}`}>
@@ -153,6 +160,7 @@ function PopularPage() {
                 </MovieLink>
               </MovieContainer>
             ))}
+            </SmallList>
           </MovieList>
           <Pagination
             currentPage={currentPage}

@@ -1,0 +1,36 @@
+.list {
+  display: flex; 
+  justify-content: space-between;
+  align-items: center; 
+  margin-bottom: 10px;
+}
+.checkbox {
+  appearance: none;
+  border: 2px solid gray;
+  width: 25px; 
+  height: 25px; 
+  border-radius: 50%; 
+  cursor: pointer; 
+}
+.checkbox:checked {
+  background-color: #87ceeb; 
+  border: none;
+}
+
+.todolist {
+  flex-grow: 1;
+  margin-left: 10px;
+}
+
+.todolist span {
+  text-align: left; 
+}
+
+.deleteBtn {
+  background: none; 
+  border: none; 
+  cursor: pointer; 
+}
+.deleteBtn:hover {
+  color : #87ceeb;
+}

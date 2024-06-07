@@ -6,29 +6,30 @@ const QuantityButton = styled.button`
   border: none;
   background-color: white;
   cursor: pointer;
-  display: block; /* 요소를 블록 레벨로 표시하여 세로 정렬을 위해 */
 `;
 
 const CartItemActionsContainer = styled.div`
   display: flex;
-  flex-direction: column; /* 요소들을 세로로 배치 */
-  align-items: center; /* 가운데 정렬 */
+  flex-direction: column;
+  align-items: center;
+`;
+
+const Quantity = styled.span`
+  font-size: 16px;
+  margin: 5px 0;
+  color: #000;
 `;
 
 const CartItemActions = ({ increaseQuantity, decreaseQuantity, quantity }) => {
   const handleDecreaseQuantity = () => {
-    if (quantity === 0) { // 수량이 1일 때 아이템을 제거
-      // decreaseQuantity 함수에 매개변수로 true를 전달하여 아이템을 제거하도록 함
-      decreaseQuantity(true);
-    } else {
+    if (quantity > 0) {
       decreaseQuantity();
     }
   };
-
   return (
     <CartItemActionsContainer>
       <QuantityButton onClick={increaseQuantity}>︿</QuantityButton>
-      <span> {quantity}</span>
+      <Quantity>{quantity}</Quantity>
       <QuantityButton onClick={handleDecreaseQuantity}>﹀</QuantityButton>
     </CartItemActionsContainer>
   );

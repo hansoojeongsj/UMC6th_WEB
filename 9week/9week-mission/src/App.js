@@ -338,9 +338,11 @@ function App() {
           <NoItemsMessage>고객님이 좋아하는 음반을 담아보세요~!</NoItemsMessage>
         )}
 
-        <ClearCartButtonContainer>
-          <ClearCartButton onClick={openModal}>장바구니 초기화</ClearCartButton>
-        </ClearCartButtonContainer>
+        {cartItems.length > 0 && (
+          <ClearCartButtonContainer>
+            <ClearCartButton onClick={openModal}>장바구니 초기화</ClearCartButton>
+          </ClearCartButtonContainer>
+        )}
         {showModal && (
           <Modal>
             <ModalContent>
